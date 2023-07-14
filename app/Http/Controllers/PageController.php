@@ -7,7 +7,7 @@ use App\Models\Article;
 use App\Models\Category;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
@@ -15,22 +15,25 @@ use Illuminate\Validation\Rule;
 class PageController extends Controller
 {
 
-    public function mailTest(){
-        Mail::to("pyaesonephonemyint@gmail.com")->send(new FirstMail("Testing"," Hello Min ga lar par"));
+    public function mailTest()
+    {
+        Mail::to("pyaesonephonemyint@gmail.com")->send(new FirstMail("Testing", " Hello Min ga lar par"));
         return "Email sent successful";
     }
 
-    public function validateTest(){
+    public function validateTest()
+    {
         $date = Carbon::now();
         $startDate = Carbon::now()->subMonths(3);
 
-        $period = CarbonPeriod::create($startDate,$date);
+        $period = CarbonPeriod::create($startDate, $date);
 
         return $period;
         // return view('validate-test');
     }
 
-    public function validateCheck(Request $request){
+    public function validateCheck(Request $request)
+    {
 
         $request->validate([
             // "title" => "required",
@@ -54,8 +57,8 @@ class PageController extends Controller
                 $builder->orWhere("description", "like", "%" . $keyword . "%");
             });
         })
-            ->when(request()->has('category'),function($query){
-                $query->where("category_id",request()->category);
+            ->when(request()->has('category'), function ($query) {
+                $query->where("category_id", request()->category);
             })
             ->when(request()->has('title'), function ($query) {
                 $sortType = request()->title ?? 'asc';
@@ -68,15 +71,16 @@ class PageController extends Controller
         return view("welcome", compact('articles'));
     }
 
-    public function show($slug){
-        $article = Article::where("slug",$slug)->firstOrFail();
-        return view('detail',compact('article'));
+    public function show($slug)
+    {
+        $article = Article::where("slug", $slug)->firstOrFail();
+        return view('detail', compact('article'));
     }
 
     public function categorized($slug)
     {
-        $category = Category::where("slug",$slug)->firstOrFail();
-        return view('categorized',[
+        $category = Category::where("slug", $slug)->firstOrFail();
+        return view('categorized', [
             "category" => $category,
             "articles" => $category->articles()->when(request()->has("keyword"), function ($query) {
                 $query->where(function (Builder $builder) {

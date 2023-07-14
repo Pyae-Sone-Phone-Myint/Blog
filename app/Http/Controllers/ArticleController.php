@@ -8,7 +8,7 @@ use App\Mail\NewPostMail;
 use App\Models\Article;
 use App\Models\Photo;
 use App\Models\User;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -24,11 +24,11 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::when(request()->has("keyword"), function ($query) {
-            $query->where(function (Builder $builder) {
+            $query->where(function (Builder $query) {
                 $keyword = request()->keyword;
 
-                $builder->where("title", "like", "%" . $keyword . "%");
-                $builder->orWhere("description", "like", "%" . $keyword . "%");
+                $query->where("title", "like", "%" . $keyword . "%");
+                $query->orWhere("description", "like", "%" . $keyword . "%");
             });
         })
             ->when(request()->has('show') == "trash", fn ($query) => $query->withTrashed())
@@ -40,14 +40,10 @@ class ArticleController extends Controller
                 $sortType = request()->title ?? 'asc';
                 $query->orderBy("title", $sortType);
             })
-            ->withCount("visitors")
             // ->dd()
+            ->withCount("visitors")
             ->latest("id")
             ->paginate(7)->withQueryString();
-
-
-
-
 
         return view("article.index", compact('articles'));
     }
@@ -99,7 +95,6 @@ class ArticleController extends Controller
                     "address" => $savedPhoto,
                     "created_at" => now(),
                     "updated_at" => now()
-
                 ];
             }
             Photo::insert($savedPhotos);
@@ -114,7 +109,7 @@ class ArticleController extends Controller
 
         $article->tags()->attach($request->tags);
 
-        
+
 
         return redirect()->route("article.index")->with("message", $article->title . " is created");
     }
@@ -166,6 +161,7 @@ class ArticleController extends Controller
         $savedThumbnail = $article->thumbnail;
         if ($request->hasFile('thumbnail')) {
             Storage::delete($article->thumbnail);
+
 
             $savedThumbnail = $request->file("thumbnail")->store("public/thumbnail");
         }
