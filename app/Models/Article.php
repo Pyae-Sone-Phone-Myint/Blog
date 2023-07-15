@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Mail;
 class Article extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ["title", "slug", "description", "excerpt", "thumbnail", "category_id", "user_id"];
+    protected $fillable = ["title", "slug", "description", "excerpt", "thumbnail", "category_id", "user_id", "deleted_at"];
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -18,6 +18,11 @@ use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('verified'); // check user's email verified
+    }
     /**
      * Display a listing of the resource.
      */
@@ -202,7 +207,7 @@ class ArticleController extends Controller
 
         // Storage::delete($article->photos->pluck("address")->toArray());
         $article->delete();
-        return redirect()->route("article.index")->with("message", "Article is deleted");
+        return redirect()->route("article.index")->with("message", "Article is deleted.You can restore from bin");
     }
 
     public function forceDelete($id)
