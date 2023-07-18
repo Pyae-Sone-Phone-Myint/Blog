@@ -165,7 +165,10 @@ class ArticleController extends Controller
 
         $savedThumbnail = $article->thumbnail;
         if ($request->hasFile('thumbnail')) {
-            Storage::delete($article->thumbnail);
+            // dd($request->thumbnail);
+            if (!is_null($savedThumbnail)) {
+                Storage::delete($article->thumbnail);
+            }
 
 
             $savedThumbnail = $request->file("thumbnail")->store("public/thumbnail");
@@ -214,8 +217,12 @@ class ArticleController extends Controller
     {
 
         $article = Article::withTrashed()->findOrFail($id);
-
+        // return $article->photos;
         $article->tags()->detach();
+        if (!is_null($article->thumbnail)) {
+            Storage::delete($article->thumbnail);
+        }
+        Storage::delete($article->photos->pluck("address")->toArray());
         $article->forceDelete();
         return redirect()->route("article.index")->with("message", "Article is deleted");
     }

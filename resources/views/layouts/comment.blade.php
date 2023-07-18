@@ -1,4 +1,4 @@
-<div class=" comment">
+<div class=" comment mt-3">
 
     <h4>Comment & Reply</h4>
 
