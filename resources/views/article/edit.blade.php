@@ -37,7 +37,7 @@
                     <div class="col-lg-4">
                         <div class="mb-3">
                             <label class=" form-label" for="">Thumbnail</label>
-                            <div style='background-image: url({{ asset(Storage::url($article->thumbnail)) }});'
+                            <div style="background-image: url({{ asset(Storage::url($article->thumbnail)) }});"
                                 class=" border bg-light rounded single-photo-update d-flex justify-content-center align-items-center">
 
                                 {{-- @if ($article->thumbnail)

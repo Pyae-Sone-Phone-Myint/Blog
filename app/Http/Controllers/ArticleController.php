@@ -102,7 +102,7 @@ class ArticleController extends Controller
                     "updated_at" => now()
                 ];
             }
-            Photo::insert($savedPhotos);
+            Photo::insert($savedPhotos); // use database
 
 
             //  foreach($photos as $photo){
@@ -223,6 +223,7 @@ class ArticleController extends Controller
             Storage::delete($article->thumbnail);
         }
         Storage::delete($article->photos->pluck("address")->toArray());
+
         $article->forceDelete();
         return redirect()->route("article.index")->with("message", "Article is deleted");
     }
